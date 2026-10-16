@@ -22,15 +22,12 @@ targets:
     entitlements:
       path: Config/App.entitlements
       properties:
-        com.apple.developer.healthkit: true
-        com.apple.developer.healthkit.access: []
         com.apple.security.application-groups:
           - group.com.example.sommeiltracker
     info:
       path: Config/App-Info.plist
       properties:
         CFBundleDisplayName: Nébuleuse
-        NSHealthShareUsageDescription: Lire votre sommeil pour afficher vos nuits et statistiques.
         UILaunchScreen: {}
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
