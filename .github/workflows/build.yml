@@ -1,0 +1,44 @@
+name: Build IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Installer XcodeGen et ldid
+        run: brew install xcodegen ldid
+
+      - name: Générer le projet Xcode
+        run: xcodegen generate
+
+      - name: Compiler (sans signature)
+        run: |
+          xcodebuild \
+            -project SommeilTracker.xcodeproj \
+            -scheme SommeilTracker \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            build
+
+      - name: Créer l'IPA (avec les droits HealthKit / App Group)
+        run: |
+          APP=build/Build/Products/Release-iphoneos/SommeilTracker.app
+          ldid -SConfig/App.entitlements "$APP"
+          ldid -SConfig/Widget.entitlements "$APP/PlugIns/SleepWidget.appex"
+          mkdir Payload
+          cp -R "$APP" Payload/
+          zip -qr SommeilTracker.ipa Payload
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SommeilTracker-ipa
+          path: SommeilTracker.ipa
