@@ -1,0 +1,61 @@
+name: SommeilTracker
+options:
+  bundleIdPrefix: com.example
+  deploymentTarget:
+    iOS: "17.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    TARGETED_DEVICE_FAMILY: "1"
+
+targets:
+  SommeilTracker:
+    type: application
+    platform: iOS
+    sources:
+      - SommeilTracker
+      - Shared
+    dependencies:
+      - target: SleepWidget
+    entitlements:
+      path: Config/App.entitlements
+      properties:
+        com.apple.developer.healthkit: true
+        com.apple.developer.healthkit.access: []
+        com.apple.security.application-groups:
+          - group.com.example.sommeiltracker
+    info:
+      path: Config/App-Info.plist
+      properties:
+        CFBundleDisplayName: Nébuleuse
+        NSHealthShareUsageDescription: Lire votre sommeil pour afficher vos nuits et statistiques.
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.sommeiltracker
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+
+  SleepWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - SleepWidget
+      - Shared
+    entitlements:
+      path: Config/Widget.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.example.sommeiltracker
+    info:
+      path: Config/Widget-Info.plist
+      properties:
+        CFBundleDisplayName: Nébuleuse
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.sommeiltracker.widget
